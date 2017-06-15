@@ -23,10 +23,9 @@ g_wheel_count = np.zeros([2])
 
 def callback_RaspiCarCamera(data):
     rospy.loginfo('%s, %d' % (data.info, data.time_stamp))
-    np_data = np.fromstring(data.camera_jpg, dtype='uint8')
 
     global g_frame
-    g_frame = cv2.imdecode(np_data, 1)
+    g_frame = data.camera_jpg
 
     global g_key
     g_key = cv2.waitKey(1) & 0xFF
