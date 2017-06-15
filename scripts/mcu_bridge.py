@@ -38,18 +38,18 @@ def talker(serial_port):
 
             time_stamp = int(time.time()*1000)
 
-            msg_distance.info = 'ok.'
+            msg_distance.info = '[mcu_bridge] ok.'
             msg_distance.time_stamp = time_stamp
             msg_distance.distance = data[0:3]
 
-            msg_wheel.info = 'ok.'
+            msg_wheel.info = msg_distance.info
             msg_wheel.time_stamp = time_stamp
             msg_wheel.wheel_count = data[3:5]
 
             pub_distance.publish(msg_distance)
             pub_wheel.publish(msg_wheel)
 
-            rospy.loginfo('%s, %d' % ('ok.', time_stamp))
+            rospy.loginfo('%s, %d' % (msg_distance.info, time_stamp))
 
 if __name__ == '__main__':
     try:

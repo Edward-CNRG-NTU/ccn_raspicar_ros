@@ -17,8 +17,7 @@ def talker(camera):
     while not rospy.is_shutdown():
         (_, frame) = camera.read()
         (_, frame) = camera.read()
-        (_, frame) = camera.read()
-        msg.info = 'ok.'
+        msg.info = '[camera] ok.'
         msg.time_stamp = int(time.time()*1000)
         result, imgencode = cv2.imencode('.jpg', frame, encode_param)
         msg.camera_jpg = imgencode.tobytes()
