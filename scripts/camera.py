@@ -22,7 +22,8 @@ def talker(camera):
         result, imgencode = cv2.imencode('.jpg', frame, encode_param)
         msg.camera_jpg = imgencode.tobytes()
         pub.publish(msg)
-        rospy.loginfo('%s, %d' % (msg.info, msg.time_stamp))
+        # rospy.loginfo('%s, %d' % (msg.info, msg.time_stamp))
+        print('%s, %d' % (msg.info, msg.time_stamp))
 
         rate.sleep()
 

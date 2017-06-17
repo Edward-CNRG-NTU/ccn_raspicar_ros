@@ -49,7 +49,8 @@ def talker(serial_port):
             pub_distance.publish(msg_distance)
             pub_wheel.publish(msg_wheel)
 
-            rospy.loginfo('%s, %d' % (msg_distance.info, time_stamp))
+            # rospy.loginfo('%s, %d' % (msg_distance.info, time_stamp))
+            print('%s, %d' % (msg_distance.info, time_stamp))
 
 if __name__ == '__main__':
     try:

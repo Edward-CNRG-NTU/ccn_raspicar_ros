@@ -78,10 +78,11 @@ def udp_routine():
                 frame = g_frame
                 g_frame = None
                 time_stamp = int(time.clock() * 1000)
-                header = struct.pack('QHHHHII', time_stamp, len(frame), g_proximity[0], g_proximity[1],
+                header = struct.pack('qHHHHII', time_stamp, len(frame), g_proximity[0], g_proximity[1],
                                      g_proximity[2], g_wheel_count[0], g_wheel_count[1])
                 sock.sendto((header + frame), target_ip)
-                rospy.loginfo('[udp_server] sending data%06d(%d bytes) to %s. ' % (time_stamp, len(frame), target_ip[0]))
+                # rospy.loginfo('[udp_server] sending data%06d(%d bytes) to %s. ' % (time_stamp, len(frame), target_ip[0]))
+                print('[udp_server] sending data%06d(%d bytes) to %s. ' % (time_stamp, len(frame), target_ip[0]))
 
             else:
                 time.sleep(0.01)
