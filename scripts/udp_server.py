@@ -57,7 +57,7 @@ def udp_routine():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.settimeout(1)
+    sock.settimeout(0)
     try:
         server_address = ('', 23232)
         rospy.loginfo('[udp_server] binding to %s port %s' % server_address)
@@ -66,15 +66,15 @@ def udp_routine():
         global g_frame
         while not rospy.is_shutdown():
 
-            if target_ip is None:
-                try:
-                    (packet, ip) = sock.recvfrom(128)
-                    if packet == b'HELLO':
-                        target_ip = ip
-                except socket.timeout:
-                    rospy.loginfo('[udp_server] wait for HELLO message...')
+            try:
+                (packet, ip) = sock.recvfrom(128)
+                if packet == b'HELLO':
+                    target_ip = ip
+            except socket.error:
+                # rospy.loginfo('[udp_server] wait for HELLO message...')
+                pass
 
-            elif g_frame is not None:
+            if target_ip is not None and g_frame is not None:
                 frame = g_frame
                 g_frame = None
                 time_stamp = int(time.clock() * 1000)
