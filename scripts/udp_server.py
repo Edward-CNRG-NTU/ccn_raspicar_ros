@@ -22,7 +22,7 @@ g_wheel_count = np.zeros([2])
 
 
 def callback_RaspiCarCamera(data):
-    rospy.loginfo('%s, %d' % (data.info, data.time_stamp))
+    # rospy.loginfo('%s, %d' % (data.info, data.time_stamp))
 
     global g_frame
     g_frame = data.camera_jpg
@@ -32,15 +32,15 @@ def callback_RaspiCarCamera(data):
 
 
 def callback_RaspiCarDistance(data):
-    rospy.loginfo('%s, %d, distance = [%3d,%3d,%3d]' % (data.info, data.time_stamp,
-                                                        data.distance[0], data.distance[1], data.distance[2]))
+    # rospy.loginfo('%s, %d, distance = [%3d,%3d,%3d]' % (data.info, data.time_stamp,
+    #                                                     data.distance[0], data.distance[1], data.distance[2]))
     global g_proximity
     g_proximity = data.distance
 
 
 def callback_RaspiCarWheel(data):
-    rospy.loginfo('%s, %d, wheel_count = [%6d,%6d]' % (data.info, data.time_stamp,
-                                                       data.wheel_count[0], data.wheel_count[1]))
+    # rospy.loginfo('%s, %d, wheel_count = [%6d,%6d]' % (data.info, data.time_stamp,
+    #                                                    data.wheel_count[0], data.wheel_count[1]))
     global g_wheel_count
     g_wheel_count = data.wheel_count
 
