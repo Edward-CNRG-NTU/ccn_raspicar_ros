@@ -51,4 +51,3 @@ if __name__ == '__main__':
         listener()
     except rospy.ROSInterruptException as e:
         rospy.loginfo(e)
-        pass

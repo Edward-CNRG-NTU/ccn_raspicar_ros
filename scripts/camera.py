@@ -30,11 +30,16 @@ def talker(camera):
 if __name__ == '__main__':
     Frame_Width = 320
     Frame_Height = 240
+    camera = cv2.VideoCapture(0)
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, Frame_Width)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, Frame_Height)
+
     try:
-        camera = cv2.VideoCapture(0)
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH, Frame_Width)
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, Frame_Height)
         talker(camera)
-    except rospy.ROSInterruptException:
+
+    except rospy.ROSInterruptException as e:
+        rospy.loginfo(e)
+
+    finally:
         camera.release()
-        pass
+

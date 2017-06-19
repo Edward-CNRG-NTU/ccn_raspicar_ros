@@ -114,8 +114,6 @@ g_obstacle_detected = False
 g_proximity = np.zeros([3])
 g_wheel_count = np.zeros([2])
 
-motor = MotorControl(dc_level=70, t=0.3)
-
 
 def turn_right_controlled(angle):
     wheel_last = g_wheel_count
@@ -181,7 +179,7 @@ def listener():
 def tcp_routine():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.settimeout(10)
+    sock.settimeout(30)
     try:
         server_address = ('', 23233)
         rospy.loginfo('[tcp_server] binding to %s port %s' % server_address)
@@ -191,21 +189,21 @@ def tcp_routine():
         while not rospy.is_shutdown():
 
             try:
-                rospy.loginfo('\t[tcp_server] waiting for new connection...')
+                rospy.loginfo('[tcp_server] waiting for new connection...')
                 connection, client_address = sock.accept()
-                rospy.loginfo('\t[tcp_server] accepted connection from %s %d.' % client_address)
+                rospy.loginfo('[tcp_server] accepted connection from %s %d.' % client_address)
 
                 while not rospy.is_shutdown():
-                    rospy.loginfo('\t\t[tcp_server] waiting for command...')
+                    rospy.loginfo('[tcp_server] waiting for command...')
                     data = str(connection.recv(128))
-                    rospy.loginfo('\t\t[tcp_server] received "%s".' % data)
+                    rospy.loginfo('[tcp_server] received "%s".' % data)
 
                     if len(data) == 0:
-                        rospy.loginfo('\t[tcp_server] connection closed.')
+                        rospy.loginfo('[tcp_server] connection closed.')
                         break
                     elif data.startswith('test'):
                         connection.sendall(b'ack test')
-                        rospy.loginfo('\t\t[tcp_server] sending ack to the client.')
+                        rospy.loginfo('[tcp_server] sending ack to the client.')
                     elif data.startswith('fwd'):
                         try:
                             value = float(data.split(':')[1])
@@ -215,7 +213,7 @@ def tcp_routine():
                             value = 0
                         forward_controlled(value)
                         connection.sendall(b'ack fwd')
-                        rospy.loginfo('\t\t[tcp_server] sending ack to the client.')
+                        rospy.loginfo('[tcp_server] sending ack to the client.')
                     elif data.startswith('right'):
                         try:
                             value = float(data.split(':')[1])
@@ -225,7 +223,7 @@ def tcp_routine():
                             value = 0
                         turn_right_controlled(value)
                         connection.sendall(b'ack right')
-                        rospy.loginfo('\t\t[tcp_server] sending ack to the client.')
+                        rospy.loginfo('[tcp_server] sending ack to the client.')
                     elif data.startswith('left'):
                         try:
                             value = float(data.split(':')[1])
@@ -235,7 +233,7 @@ def tcp_routine():
                             value = 0
                         turn_left_controlled(value)
                         connection.sendall(b'ack left')
-                        rospy.loginfo('\t\t[tcp_server] sending ack to the client.')
+                        rospy.loginfo('[tcp_server] sending ack to the client.')
                     # elif data.startswith('obstacle'):
                     #     global obstacle_detection_routine_stopper
                     #     try:
@@ -255,13 +253,13 @@ def tcp_routine():
                     #         obstacle_detection_routine_stopper = None
                     #
                     #     connection.sendall(b'ack')
-                    #     rospy.loginfo('\t\t[tcp_server] sending ack to the client.')
+                    #     rospy.loginfo('[tcp_server] sending ack to the client.')
                     else:
                         connection.sendall(b'error')
-                        rospy.loginfo('\t\tunexpected command.')
+                        rospy.loginfo('[tcp_server] unexpected command.')
 
             except socket.timeout:
-                rospy.loginfo('\t[tcp_server] sock.accept() time out.')
+                rospy.loginfo('[tcp_server] sock.accept() time out.')
 
     except socket.error as e:
         rospy.loginfo(e)
@@ -272,11 +270,16 @@ def tcp_routine():
 
 
 if __name__ == '__main__':
+    motor = MotorControl(dc_level=70, t=0.3)
 
     try:
         rospy.init_node('RaspiCarTCPServer_node', anonymous=False)
         listener()
         tcp_routine()
+
     except rospy.ROSInterruptException as e:
         rospy.loginfo(e)
-        pass
+
+    finally:
+        motor.cleanup()
+

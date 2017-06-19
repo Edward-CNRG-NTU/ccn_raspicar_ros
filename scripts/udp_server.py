@@ -94,13 +94,11 @@ def udp_routine():
 
 
 if __name__ == '__main__':
-    rospy.loginfo(sys.version)
-    rospy.loginfo(cv2.__version__)
 
     try:
         rospy.init_node('RaspiCarUDPServer_node', anonymous=False)
         listener()
         udp_routine()
+
     except rospy.ROSInterruptException as e:
         rospy.loginfo(e)
-        pass
