@@ -46,7 +46,6 @@ def callback_RaspiCarWheel(data):
 
 
 def listener():
-    rospy.init_node('RaspiCarViewTopics_node', anonymous=False)
     rospy.Subscriber('RaspiCarCamera', RaspiCarCamera, callback_RaspiCarCamera)
     rospy.Subscriber('RaspiCarDistance', RaspiCarDistance, callback_RaspiCarDistance)
     rospy.Subscriber('RaspiCarWheel', RaspiCarWheel, callback_RaspiCarWheel)
@@ -88,10 +87,10 @@ def udp_routine():
                 time.sleep(0.01)
 
     except socket.error as e:
-        print(e)
+        rospy.loginfo(e)
     finally:
         sock.close()
-        print('[udp_server] stopped.')
+        rospy.loginfo('[udp_server] stopped.')
 
 
 if __name__ == '__main__':
@@ -99,6 +98,7 @@ if __name__ == '__main__':
     rospy.loginfo(cv2.__version__)
 
     try:
+        rospy.init_node('RaspiCarUDPServer_node', anonymous=False)
         listener()
         udp_routine()
     except rospy.ROSInterruptException as e:
