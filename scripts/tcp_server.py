@@ -122,9 +122,9 @@ def turn_right_controlled(angle):
         if not g_obstacle_detected:
             time.sleep(0.05)
             if g_wheel_count[0] - wheel_last[0] < count:
-                motor.turn_right(speed=0.8, t=0.2)
+                motor.turn_right(speed=0.9, t=0.05)
             elif g_wheel_count[0] - wheel_last[0] > count:
-                motor.turn_left(speed=0.8, t=0.15)
+                motor.turn_left(speed=0.8, t=0.03)
                 break
             else:
                 break
@@ -137,39 +137,50 @@ def turn_left_controlled(angle):
     count = angle / 4.45
     while not rospy.is_shutdown():
         if not g_obstacle_detected:
-            time.sleep(0.05)
+            
             if g_wheel_count[1] - wheel_last[1] < count:
-                motor.turn_left(speed=0.8, t=0.2)
+                motor.turn_left(speed=0.9, t=0.05)
             elif g_wheel_count[1] - wheel_last[1] > count:
-                motor.turn_right(speed=0.8, t=0.15)
+                motor.turn_right(speed=0.8, t=0.03)
                 break
             else:
                 break
+
+            time.sleep(0.05)
+            
         else:
             time.sleep(0.1)
 
 
 def forward_controlled(distance):
     wheel_last = g_wheel_count
-    diff_of_both = g_wheel_count - wheel_last
-    while(not rospy.is_shutdown()) and np.sum(diff_of_both) / 2 < distance / 0.0113:
+    count = distance / 0.0113
+    while not rospy.is_shutdown():        
         if not g_obstacle_detected:
-            motor.forward(speed=1.0, t=0.3)
-            # time.sleep(0.1)
+            
             diff_of_both = g_wheel_count - wheel_last
             diff_between = diff_of_both[0] - diff_of_both[1]
-            print(np.sum(diff_of_both), diff_between)
+            print(np.sum(diff_of_both)/2, diff_between)
+
+            if np.sum(diff_of_both)/2 < count:
+                motor.forward(speed=1.0, t=0.05)                
+            else:
+                break
+
             if diff_between > 0:
-                motor.turn_left(speed=0.7, t=0.1 + np.abs(diff_between) * 0.005)
+                motor.turn_left(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
             elif diff_between < 0:
-                motor.turn_right(speed=0.7, t=0.1 + np.abs(diff_between) * 0.005)
+                motor.turn_right(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
+                
+            time.sleep(0.05)
+            
         else:
             time.sleep(0.1)
 
 
 def callback_RaspiCarWheel(data):
     global g_wheel_count
-    g_wheel_count = data.wheel_count
+    g_wheel_count = np.array(data.wheel_count)
 
 
 def listener():
