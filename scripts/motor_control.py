@@ -185,6 +185,9 @@ def callback_RaspiCarWheel(data):
 
 
 def handle_RaspiCarMotorControl_request(request):
+
+    print(request)
+
     command = request.command
     if command.startswith('test'):
         return 'ack test', 'ok.'
@@ -243,9 +246,10 @@ def handle_RaspiCarMotorControl_request(request):
 
 if __name__ == '__main__':
     motor = MotorControl(dc_level=70, t=0.3)
+    rospy.loginfo('[motor_control] up and running...')
 
     try:
-        rospy.init_node('RaspiCarTCPServer_node', anonymous=False)
+        rospy.init_node('RaspiCarMotorControl_node', anonymous=False)
         rospy.Subscriber('RaspiCarWheel', RaspiCarWheel, callback_RaspiCarWheel)
         s = rospy.Service('RaspiCarMotorControl', RaspiCarMotorControl, handle_RaspiCarMotorControl_request)
         rospy.spin()
