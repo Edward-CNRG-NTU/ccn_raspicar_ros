@@ -2,14 +2,11 @@
 
 import rospy
 import numpy as np
-import sys
 import socket
 import time
-import struct
 import RPi.GPIO as GPIO
 
 from ccn_raspicar_ros.msg import RaspiCarWheel
-from ccn_raspicar_ros.msg import RaspiCarWheelControl
 
 
 class MotorControl(object):
@@ -120,7 +117,7 @@ def turn_right_controlled(angle):
     count = angle / 4.45
     while not rospy.is_shutdown():
         if not g_obstacle_detected:
-            time.sleep(0.05)
+
             if g_wheel_count[0] - wheel_last[0] < count:
                 motor.turn_right(speed=0.9, t=0.05)
             elif g_wheel_count[0] - wheel_last[0] > count:
@@ -128,6 +125,9 @@ def turn_right_controlled(angle):
                 break
             else:
                 break
+
+            time.sleep(0.05)
+
         else:
             time.sleep(0.1)
 
@@ -159,18 +159,18 @@ def forward_controlled(distance):
         if not g_obstacle_detected:
             
             diff_of_both = g_wheel_count - wheel_last
-            diff_between = diff_of_both[0] - diff_of_both[1]
-            print(np.sum(diff_of_both)/2, diff_between)
 
             if np.sum(diff_of_both)/2 < count:
                 motor.forward(speed=1.0, t=0.05)                
             else:
                 break
 
+            diff_between = diff_of_both[0] - diff_of_both[1]
+
             if diff_between > 0:
-                motor.turn_left(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
+                motor.turn_left(speed=0.7, t=0.03 + diff_between * 0.005)
             elif diff_between < 0:
-                motor.turn_right(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
+                motor.turn_right(speed=0.7, t=0.03 - diff_between * 0.005)
                 
             time.sleep(0.05)
             

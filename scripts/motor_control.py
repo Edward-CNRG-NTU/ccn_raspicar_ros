@@ -2,10 +2,7 @@
 
 import rospy
 import numpy as np
-import sys
-import socket
 import time
-import struct
 import RPi.GPIO as GPIO
 
 from ccn_raspicar_ros.msg import RaspiCarWheel
@@ -121,7 +118,7 @@ def turn_right_controlled(angle):
     count = angle / 4.45
     while not rospy.is_shutdown():
         if not g_obstacle_detected:
-            time.sleep(0.05)
+
             if g_wheel_count[0] - wheel_last[0] < count:
                 motor.turn_right(speed=0.9, t=0.05)
             elif g_wheel_count[0] - wheel_last[0] > count:
@@ -129,6 +126,9 @@ def turn_right_controlled(angle):
                 break
             else:
                 break
+
+            time.sleep(0.05)
+
         else:
             time.sleep(0.1)
 
@@ -160,18 +160,18 @@ def forward_controlled(distance):
         if not g_obstacle_detected:
             
             diff_of_both = g_wheel_count - wheel_last
-            diff_between = diff_of_both[0] - diff_of_both[1]
-            print(np.sum(diff_of_both)/2, diff_between)
 
-            if np.sum(diff_of_both)/2 < count:
+            if np.sum(diff_of_both)/2.0 < count:
                 motor.forward(speed=1.0, t=0.05)                
             else:
                 break
 
+            diff_between = diff_of_both[0] - diff_of_both[1]
+
             if diff_between > 0:
-                motor.turn_left(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
+                motor.turn_left(speed=0.7, t=0.03 + diff_between * 0.005)
             elif diff_between < 0:
-                motor.turn_right(speed=0.7, t=0.03 + np.abs(diff_between) * 0.005)
+                motor.turn_right(speed=0.7, t=0.03 - diff_between * 0.005)
                 
             time.sleep(0.05)
             
@@ -187,7 +187,8 @@ def callback_RaspiCarWheel(data):
 def handle_RaspiCarMotorControl_request(request):
     command = request.command
     if command.startswith('test'):
-        return RaspiCarMotorControlResponse('ack test')
+        return 'ack test', 'ok.'
+
     elif command.startswith('fwd'):
         try:
             value = float(command.split(':')[1])
@@ -196,7 +197,8 @@ def handle_RaspiCarMotorControl_request(request):
         except ValueError:
             value = 0
         forward_controlled(value)
-        return RaspiCarMotorControlResponse('ack fwd')
+        return 'ack fwd:%f' % value, 'ok.'
+
     elif command.startswith('right'):
         try:
             value = float(command.split(':')[1])
@@ -205,7 +207,7 @@ def handle_RaspiCarMotorControl_request(request):
         except ValueError:
             value = 0
         turn_right_controlled(value)
-        return RaspiCarMotorControlResponse('ack right')
+        return 'ack right:%f' % value, 'ok.'
     elif command.startswith('left'):
         try:
             value = float(command.split(':')[1])
@@ -214,7 +216,7 @@ def handle_RaspiCarMotorControl_request(request):
         except ValueError:
             value = 0
         turn_left_controlled(value)
-        return RaspiCarMotorControlResponse('ack left')
+        return 'ack left:%f' % value, 'ok.'
         # elif data.startswith('obstacle'):
         #     global obstacle_detection_routine_stopper
         #     try:
@@ -236,7 +238,7 @@ def handle_RaspiCarMotorControl_request(request):
         #     connection.sendall(b'ack')
         #     rospy.loginfo('[tcp_server] sending ack to the client.')
     else:
-        return RaspiCarMotorControlResponse('error')
+        return 'error', 'ok.'
 
 
 if __name__ == '__main__':
