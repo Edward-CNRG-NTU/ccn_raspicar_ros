@@ -2,12 +2,12 @@
 
 import rospy
 from std_msgs.msg import String
-from ccn_final.msg import RaspiCarMsg
-from ccn_final.msg import RaspiCarCamera
-from ccn_final.msg import RaspiCarDistance
-from ccn_final.msg import RaspiCarServo
-from ccn_final.msg import RaspiCarWheel
-from ccn_final.msg import RaspiCarWheelControl
+from ccn_raspicar_ros.msg import RaspiCarMsg
+from ccn_raspicar_ros.msg import RaspiCarCamera
+from ccn_raspicar_ros.msg import RaspiCarDistance
+from ccn_raspicar_ros.msg import RaspiCarServo
+from ccn_raspicar_ros.msg import RaspiCarWheel
+from ccn_raspicar_ros.msg import RaspiCarWheelControl
 
 def talker():
     rospy.init_node('RaspiCarCamera', anonymous=True)

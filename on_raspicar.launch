@@ -1,0 +1,6 @@
+<launch>
+  <node name="mcu_bridge" pkg="ccn_raspicar_ros" type="mcu_bridge.py" respawn="true" />
+  <node name="camera" pkg="ccn_raspicar_ros" type="camera.py" respawn="true" />
+  <node name="udp_server" pkg="ccn_raspicar_ros" type="udp_server.py" respawn="true" />
+  <node name="tcp_server" pkg="ccn_raspicar_ros" type="tcp_server.py" respawn="true" />
+</launch>

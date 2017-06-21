@@ -6,9 +6,9 @@ import time
 import serial
 import select
 
-from ccn_final.msg import RaspiCarDistance
-from ccn_final.msg import RaspiCarWheel
-from ccn_final.msg import RaspiCarServo
+from ccn_raspicar_ros.msg import RaspiCarDistance
+from ccn_raspicar_ros.msg import RaspiCarWheel
+from ccn_raspicar_ros.msg import RaspiCarServo
 
 
 def talker():

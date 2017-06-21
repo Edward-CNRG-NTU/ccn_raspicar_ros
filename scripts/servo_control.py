@@ -3,7 +3,7 @@
 import rospy
 import time
 
-from ccn_final.msg import RaspiCarServo
+from ccn_raspicar_ros.msg import RaspiCarServo
 
 
 def talker():

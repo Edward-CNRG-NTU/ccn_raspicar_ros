@@ -4,9 +4,9 @@ import rospy
 import numpy as np
 import nengo
 
-from ccn_final.msg import RaspiCarDistance
-from ccn_final.msg import RaspiCarWheel
-from ccn_final.msg import RaspiCarServo
+from ccn_raspicar_ros.msg import RaspiCarDistance
+from ccn_raspicar_ros.msg import RaspiCarWheel
+from ccn_raspicar_ros.msg import RaspiCarServo
 
 
 def callback_RaspiCarDistance(data):

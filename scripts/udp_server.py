@@ -8,9 +8,9 @@ import socket
 import time
 import struct
 
-from ccn_final.msg import RaspiCarCamera
-from ccn_final.msg import RaspiCarDistance
-from ccn_final.msg import RaspiCarWheel
+from ccn_raspicar_ros.msg import RaspiCarCamera
+from ccn_raspicar_ros.msg import RaspiCarDistance
+from ccn_raspicar_ros.msg import RaspiCarWheel
 
 Frame_Width = 320
 Frame_Height = 240

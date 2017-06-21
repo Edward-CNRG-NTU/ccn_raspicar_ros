@@ -5,7 +5,7 @@ import rospy
 import numpy as np
 import time
 
-from ccn_final.msg import RaspiCarCamera
+from ccn_raspicar_ros.msg import RaspiCarCamera
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 85]
 
